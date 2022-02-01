@@ -6,6 +6,7 @@
 
     <modules>
         <module>core-service</module>
+        <module>cart-service</module>
         <module>front-service</module>
 		<module>gateway</module>
         <module>auth-service</module>
@@ -47,7 +48,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-commons</artifactId>
+			<version>3.0.4</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
