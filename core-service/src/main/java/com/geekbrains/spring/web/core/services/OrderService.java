@@ -1,14 +1,15 @@
 package com.geekbrains.spring.web.core.services;
-
+import com.geekbrains.spring.web.api.dto.Cart;
+import com.geekbrains.spring.web.api.dto.OrderDetailsDto;
 import com.geekbrains.spring.web.api.exceptions.ResourceNotFoundException;
-import com.geekbrains.spring.web.core.dto.Cart;
-import com.geekbrains.spring.web.core.dto.OrderDetailsDto;
 import com.geekbrains.spring.web.core.entities.Order;
 import com.geekbrains.spring.web.core.entities.OrderItem;
 import com.geekbrains.spring.web.core.repositories.OrdersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,13 +18,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrdersRepository ordersRepository;
-    private final CartService cartService;
+    @Autowired
+    private final RestTemplate restTemplate;
     private final ProductsService productsService;
 
     @Transactional
     public void createOrder(String username, OrderDetailsDto orderDetailsDto) {
-        String cartKey = cartService.getCartUuidFromSuffix(username);
-        Cart currentCart = cartService.getCurrentCart(cartKey);
+        String cartKey = restTemplate.getForObject("http://web-market-cart/api/v1/cartUuidFromSuffix", String.class);
+        Cart currentCart = restTemplate.getForObject("http://web-market-cart/api/v1/" + cartKey, Cart.class);
         Order order = new Order();
         order.setAddress(orderDetailsDto.getAddress());
         order.setPhone(orderDetailsDto.getPhone());
@@ -41,7 +43,7 @@ public class OrderService {
                 }).collect(Collectors.toList());
         order.setItems(items);
         ordersRepository.save(order);
-        cartService.clearCart(cartKey);
+        restTemplate.getForObject("http://web-market-cart/api/v1/" + cartKey + "/clear", Object.class);
     }
 
     public List<Order> findOrdersByUsername(String username) {
