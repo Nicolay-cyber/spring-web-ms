@@ -1,15 +1,12 @@
 package com.geekbrains.spring.web.core.services;
 import com.geekbrains.spring.web.api.dto.Cart;
-import com.geekbrains.spring.web.api.dto.ProductDto;
+import com.geekbrains.spring.web.api.dto.OrderDetailsDto;
 import com.geekbrains.spring.web.api.exceptions.ResourceNotFoundException;
-import com.geekbrains.spring.web.core.dto.OrderDetailsDto;
 import com.geekbrains.spring.web.core.entities.Order;
 import com.geekbrains.spring.web.core.entities.OrderItem;
 import com.geekbrains.spring.web.core.repositories.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -22,13 +19,7 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrdersRepository ordersRepository;
     @Autowired
-    private RestTemplate restTemplate;
-    @Bean
-    @LoadBalanced
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
+    private final RestTemplate restTemplate;
     private final ProductsService productsService;
 
     @Transactional

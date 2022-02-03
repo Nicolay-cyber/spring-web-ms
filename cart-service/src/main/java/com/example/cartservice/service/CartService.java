@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 public class CartService {
     @Autowired
     private final RestTemplate restTemplate;
+    @Autowired
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${utils.cart.prefix}")
